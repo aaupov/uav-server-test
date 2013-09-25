@@ -20,12 +20,17 @@ int main() {
     addr_sr.sin_port = htons(51000);
     addr_sr.sin_addr.s_addr = INADDR_ANY;
 
-    bind (sock, reinterpret_cast<const struct sockaddr*>(&addr_sr), sizeof addr_sr);
+    if ( bind (sock, reinterpret_cast<const struct sockaddr*>(&addr_sr), 
+               sizeof addr_sr) )
+    {
+        cerr << "Unable to bind: " << strerror( errno) << endl;
+        return 1;
+    }
 
     while ( 1 ){
         if ( recvfrom( sock, buf, 256, 0, NULL, NULL) == -1 )
         {
-            cerr << strerror( errno) << endl;
+            cerr << "Error while listening to socket:" << strerror( errno) << endl;
             return 1;
         }
         memcpy( header, buf, sizeof( struct message));
