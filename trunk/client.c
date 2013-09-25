@@ -35,8 +35,8 @@ int main( int argc, char* argv[]) {
         hb.msg.num = atoi( argv[argc-1]);
         hb.msg.checksum = 0xdeadbeef;
 
-        hb.st.longitude = 97.6 * rand()/RAND_MAX;
-        hb.st.latitude = 98.13 * rand()/RAND_MAX;
+        hb.st.longitude = 55.0 + (double)rand()/(double)RAND_MAX;
+        hb.st.latitude = 37.0 + (double)rand()/(double)RAND_MAX;
         hb.st.heading = 1;
         hb.st.baroaltabs = 10;
         hb.st.baroaltrel = 20;
