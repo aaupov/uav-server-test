@@ -1,4 +1,5 @@
 #include "logger.h"
+#include <iostream>
 
 log_base::log_base( )
 {
@@ -10,3 +11,12 @@ log_base::log_base( )
 log_base::~log_base( )
 { }
 
+log_err::~log_err( )
+{
+    std::cerr << timestr << oss.str( ) << std::endl;
+}
+
+log_norm::~log_norm( )
+{
+    std::cout << oss.str( ) << std::endl;
+}

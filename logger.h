@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <sstream>
 #include <ctime>
 
@@ -27,17 +26,11 @@ class log_base
 class log_err : public log_base
 {
     public:
-        virtual ~log_err( )
-        {
-            std::cerr << timestr << oss.str( ) << std::endl;
-        }
+        virtual ~log_err( );
 };
 
 class log_norm : public log_base
 {
     public:
-        virtual ~log_norm( )
-        {
-            std::cout << oss.str( ) << std::endl;
-        }
+        virtual ~log_norm( );
 };
