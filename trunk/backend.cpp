@@ -1,34 +1,18 @@
-#include <netinet/in.h>
-#include <errno.h>
 #include "dcp.h"
 #include "handler.h"
 #include "mysql_connection.h"
 #include "logger.h"
+#include "socket.h"
+#include <cstring>
 
 int main() {
-    int sock = socket(AF_INET, SOCK_DGRAM, 0);
-    char* buf = new char[256];
+    char* buf;
     struct message* header = new struct message;
-    struct sockaddr_in addr_sr = {0};
     db_connection* conn = new db_connection;
-
-    addr_sr.sin_family = AF_INET;
-    addr_sr.sin_port = htons(51000);
-    addr_sr.sin_addr.s_addr = INADDR_ANY;
-
-    if ( bind (sock, reinterpret_cast<const struct sockaddr*>(&addr_sr), 
-               sizeof addr_sr) )
-    {
-        log_err() << "Unable to bind: " << strerror( errno);
-        return 1;
-    }
+    socket_listener* net_conn = new socket_listener;
 
     while ( 1 ){
-        if ( recvfrom( sock, buf, 256, 0, NULL, NULL) == -1 )
-        {
-            log_err() << "Error while listening to socket:" << strerror( errno);
-            return 1;
-        }
+        buf = net_conn->get_buffer( );
         memcpy( header, buf, sizeof( struct message));
 
         /**
@@ -70,9 +54,9 @@ int main() {
                 log_err() << header->num << ": unhandled message type " << header->type;
                 continue;
         }
+        delete buf;
     }
 
-    delete buf;
     log_norm() << "Server terminated";
     return 0;
 }
