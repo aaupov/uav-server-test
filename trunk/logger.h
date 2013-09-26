@@ -27,7 +27,7 @@ class log_base
 class log_err : public log_base
 {
     public:
-        ~log_err( )
+        virtual ~log_err( )
         {
             std::cerr << timestr << oss.str( ) << std::endl;
         }
@@ -36,7 +36,7 @@ class log_err : public log_base
 class log_norm : public log_base
 {
     public:
-        ~log_norm( )
+        virtual ~log_norm( )
         {
             std::cout << oss.str( ) << std::endl;
         }
