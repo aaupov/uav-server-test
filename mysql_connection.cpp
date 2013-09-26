@@ -25,7 +25,7 @@ void db_connection::query( string q)
     /* check whether connection is alive */
     if ( mysql_ping( conn) )
     {
-        log_err() << "Reconnecting to mysql server";
+        log_norm() << "Reconnecting to mysql server";
     }
 
     /* perform actual query */
