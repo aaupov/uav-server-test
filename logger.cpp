@@ -8,6 +8,5 @@ log_base::log_base( )
 }
 
 log_base::~log_base( )
-{
-}
+{ }
 
