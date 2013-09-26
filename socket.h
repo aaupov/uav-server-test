@@ -2,6 +2,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#define PORT 51000
+
 class net_connection
 {
     private:
