@@ -1,13 +1,9 @@
-#include <iostream>
 #include <netinet/in.h>
 #include <errno.h>
 #include "dcp.h"
 #include "handler.h"
 #include "mysql_connection.h"
 #include "logger.h"
-
-using std::cout;
-using std::endl;
 
 int main() {
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -77,7 +73,7 @@ int main() {
     }
 
     delete buf;
-    cout << "Server terminated" << endl;
+    log_norm() << "Server terminated";
     return 0;
 }
 

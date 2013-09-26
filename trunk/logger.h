@@ -3,24 +3,41 @@
 #include <sstream>
 #include <ctime>
 
-class log_err 
+class log_base
 {
-    private:
+    protected:
         std::ostringstream oss;
         std::time_t time; 
         struct tm *tmp;
         char timestr[64];
 
     public: 
-        log_err( );
-        ~log_err( );
+        log_base( );
+        virtual ~log_base( );
 
         /* template implementation must be in header */
         template< class T>
-        log_err& operator<<(const T &x)
+        log_base& operator<<(const T &x)
         {
             oss << x;
             return *this;
         }
 };
 
+class log_err : public log_base
+{
+    public:
+        ~log_err( )
+        {
+            std::cerr << timestr << oss.str( ) << std::endl;
+        }
+};
+
+class log_norm : public log_base
+{
+    public:
+        ~log_norm( )
+        {
+            std::cout << oss.str( ) << std::endl;
+        }
+};
