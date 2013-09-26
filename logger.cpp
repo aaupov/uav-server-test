@@ -1,14 +1,13 @@
 #include "logger.h"
 
-log_err::log_err( )
+log_base::log_base( )
 {
     time = std::time( NULL);
     tmp = std::localtime( &time);
-    std::strftime( timestr, sizeof( timestr), "[%c]", tmp);
+    std::strftime( timestr, sizeof( timestr), "[%c] ", tmp);
 }
 
-log_err::~log_err( )
+log_base::~log_base( )
 {
-    std::cerr << timestr << " " <<  oss.str( ) << std::endl;
 }
 
