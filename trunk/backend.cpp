@@ -9,10 +9,10 @@ int main() {
     char* buf;
     struct message* header = new struct message;
     db_connection* conn = new db_connection;
-    socket_listener* net_conn = new socket_listener;
+    net_connection* net_conn = new net_connection;
 
     while ( 1 ){
-        buf = net_conn->get_buffer( );
+        buf = net_conn->receive( );
         memcpy( header, buf, sizeof( struct message));
 
         /**
