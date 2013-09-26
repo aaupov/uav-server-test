@@ -1,16 +1,16 @@
 #pragma once
 #include <string>
-#include <iostream>
 #include <mysql/mysql.h>
 #include <cstdlib>
+#include "logger.h"
 
 using namespace std;
 
 class db_connection
 {
     public:
-        db_connection();
-        ~db_connection();
+        db_connection( );
+        ~db_connection( );
 
         void query( string);
     private:
