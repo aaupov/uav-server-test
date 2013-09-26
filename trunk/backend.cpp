@@ -4,9 +4,9 @@
 #include "dcp.h"
 #include "handler.h"
 #include "mysql_connection.h"
+#include "logger.h"
 
 using std::cout;
-using std::cerr;
 using std::endl;
 
 int main() {
@@ -23,14 +23,14 @@ int main() {
     if ( bind (sock, reinterpret_cast<const struct sockaddr*>(&addr_sr), 
                sizeof addr_sr) )
     {
-        cerr << "Unable to bind: " << strerror( errno) << endl;
+        log_err() << "Unable to bind: " << strerror( errno);
         return 1;
     }
 
     while ( 1 ){
         if ( recvfrom( sock, buf, 256, 0, NULL, NULL) == -1 )
         {
-            cerr << "Error while listening to socket:" << strerror( errno) << endl;
+            log_err() << "Error while listening to socket:" << strerror( errno);
             return 1;
         }
         memcpy( header, buf, sizeof( struct message));
@@ -42,7 +42,7 @@ int main() {
         /** Only allow DCP messages */
         if ( header->proto != Proto_Dispatcher )
         {
-            cerr << header->num << ": unhandled protocol " << header->proto << endl;
+            log_err() << header->num << ": unhandled protocol " << header->proto;
             continue;
         }
 
@@ -71,7 +71,7 @@ int main() {
                 break;
 
             default:
-                cerr << header->num << ": unhandled message type " << header->type << endl;
+                log_err() << header->num << ": unhandled message type " << header->type;
                 continue;
         }
     }
