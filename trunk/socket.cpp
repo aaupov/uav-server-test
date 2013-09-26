@@ -15,7 +15,7 @@ net_connection::net_connection( )
     sock = socket(AF_INET, SOCK_DGRAM, 0);
 
     addr_sr.sin_family = AF_INET;
-    addr_sr.sin_port = htons(51000);
+    addr_sr.sin_port = htons( PORT);
     addr_sr.sin_addr.s_addr = INADDR_ANY;
 
     if ( bind (sock, reinterpret_cast<const struct sockaddr*>(&addr_sr), 
