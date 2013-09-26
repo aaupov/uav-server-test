@@ -13,7 +13,7 @@ class log_base
 
     public: 
         log_base( );
-        virtual ~log_base( );
+        virtual ~log_base( ) = 0;
 
         /* template implementation must be in header */
         template< class T>
