@@ -1,8 +1,25 @@
 #include "mysql_connection.h"
 
-db_connection::db_connection( )
+void db_connection::query( string q)
 {
-    if ( ( conn = mysql_init(NULL)) == NULL ) 
+    /* check whether connection is alive */
+    if ( mysql_ping( conn) )
+    {
+        log_err() << "Reconnecting to mysql server";
+        db_connection::close_connection( );
+        conn = db_connection::open_connection( );
+    }
+
+    /* perform actual query */
+    if ( mysql_query( conn, q.c_str( )) )
+    {
+        log_err() << q << " failed: " << mysql_error( conn);
+    }
+}
+
+MYSQL* db_connection::open_connection( )
+{
+    if ( ( conn = mysql_init( NULL)) == NULL ) 
     {
         log_err() << "mysql_init() failed: " << mysql_error( conn);
         exit( EXIT_FAILURE);
@@ -13,25 +30,10 @@ db_connection::db_connection( )
         log_err() << "connect failed: " << mysql_error( conn);
         exit( EXIT_FAILURE);
     }                                                                           
+    return conn;
 }
 
-db_connection::~db_connection( )
+void db_connection::close_connection( )
 {
     mysql_close( conn);
-}
-
-void db_connection::query( string q)
-{
-    /* check whether connection is alive */
-    if ( mysql_ping( conn) )
-    {
-        log_err() << "Reconnecting to mysql server failed";
-        exit( EXIT_FAILURE);
-    }
-
-    /* perform actual query */
-    if ( mysql_query( conn, q.c_str( )) )
-    {
-        log_err() << q << " failed: " << mysql_error( conn);
-    }
 }
