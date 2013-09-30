@@ -11,11 +11,20 @@
 
 #include "dcp.h"
 
+uint32_t simple_sum_hash(const uint8_t* data, size_t datasize)
+{
+    uint32_t s_hash=0;
+    uint32_t s_counter;
+    for( s_counter=0; s_counter < datasize; s_counter++)
+        s_hash += data[s_counter];
+    return s_hash;
+}
+
 int main( int argc, char* argv[]) {
     int sock;
     struct sockaddr_in addr_cl = {0}, addr_sr = {0};
 
-    struct msg_heartbeat hb;
+    struct msg_heartbeat hb = {0};
 
     addr_cl.sin_family = AF_INET;
     addr_cl.sin_port = htons(0);
@@ -26,14 +35,14 @@ int main( int argc, char* argv[]) {
     inet_aton("62.76.179.84", &addr_sr.sin_addr); 
 
     sock = socket(AF_INET, SOCK_DGRAM, 0);
-    bind(sock, &addr_cl, sizeof(struct sockaddr_in));
+    bind(sock, (const struct sockaddr *)&addr_cl, sizeof(struct sockaddr_in));
     srand( time( NULL));
 
     {
         hb.msg.proto = Proto_Dispatcher; 
         hb.msg.type = Msg_Heartbeat;
         hb.msg.num = atoi( argv[argc-1]);
-        hb.msg.checksum = 0xdeadbeef;
+        hb.msg.checksum = 0;
 
         hb.st.longitude = 55.0 + (double)rand()/(double)RAND_MAX;
         hb.st.latitude = 37.0 + (double)rand()/(double)RAND_MAX;
@@ -44,7 +53,7 @@ int main( int argc, char* argv[]) {
         hb.st.temperature = 100;
         hb.st.voltage = 5;
         hb.st.current = 2;
-        hb.st.boardtime = 1<<13;
+        hb.st.boardtime = 1234;
         hb.st.gsmlevel = 80;
         hb.st.last_msgnum = 0;
         hb.st.denial = 1;
@@ -63,9 +72,10 @@ int main( int argc, char* argv[]) {
         hb.st.cpt.emergency.latitude = 4.2e4;
         hb.st.cpt.speed = 100;
         hb.st.cpt.altitude = 200;
+        hb.msg.checksum = simple_sum_hash( (const uint8_t *)&hb, sizeof( hb));
     }
 
-    sendto(sock, &hb, sizeof(hb), 0, &addr_sr, sizeof(addr_sr));
+    sendto(sock, &hb, sizeof(hb), 0, (const struct sockaddr *)&addr_sr, sizeof(addr_sr));
 
     return 0;
 }

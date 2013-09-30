@@ -53,4 +53,11 @@ void report( void* buf)
     return;
 }
 
+/** Nasty bytes manipulation */
+uint32_t byte_repres( const uint8_t* obj, size_t size)
+{
+    uint32_t result = 0;
+    for ( const uint8_t* tmp = obj; tmp < obj + size; result += *tmp++ );
 
+    return result;
+}
