@@ -26,15 +26,18 @@ int main() {
             continue;
         }
 
-        /** Checksum verification? */
-
         /** 
          * Distinguish messages by type, 
-         * then pass buffer to appropriate handler
+         * then pass buffer to appropriate handler, calculate checksum there.
          */
         switch ( header->type )
         {
             case Msg_Heartbeat:
+                if ( checksum<struct msg_heartbeat>( (const uint8_t*)buf) )
+                {
+                    log_err() << "Incorrect checksum";
+                    continue;
+                }
                 heartbeat( buf, conn);
                 break;
 
