@@ -15,10 +15,6 @@ int main() {
         buf = net_conn->receive( );
         memcpy( header, buf, sizeof( struct message));
 
-        /**
-         * Parse header
-         */
-
         /** Only allow DCP messages */
         if ( header->proto != Proto_Dispatcher )
         {
@@ -26,10 +22,6 @@ int main() {
             continue;
         }
 
-        /** 
-         * Distinguish messages by type, 
-         * then pass buffer to appropriate handler, calculate checksum there.
-         */
         switch ( header->type )
         {
             case Msg_Heartbeat:

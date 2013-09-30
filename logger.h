@@ -14,7 +14,6 @@ class log_base
         log_base( );
         virtual ~log_base( ) = 0;
 
-        /* template implementation must be in header */
         template< class T>
         log_base& operator<<(const T &x)
         {
