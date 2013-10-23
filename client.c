@@ -72,6 +72,8 @@ int main( int argc, char* argv[]) {
         hb.st.cpt.emergency.latitude = 4.2e4;
         hb.st.cpt.speed = 100;
         hb.st.cpt.altitude = 200;
+        hb.st.pitch = 3.14;
+        hb.st.roll = 1592;
         hb.msg.checksum = simple_sum_hash( (const uint8_t *)&hb, sizeof( hb));
     }
 
