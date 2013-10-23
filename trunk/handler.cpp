@@ -30,7 +30,9 @@ void heartbeat( void* buf, db_connection* conn)
           << hb->st.srv.channel[4]  << ", "
           << hb->st.srv.channel[5]  << ", "
           << hb->st.gpsspeed  << ", "
-          << (int)hb->st.status << ")";
+          << (int)hb->st.status << ", "
+          << hb->st.roll << ", "
+          << hb->st.pitch << ")";
 
     conn->query( query.str( ));
     delete hb;
