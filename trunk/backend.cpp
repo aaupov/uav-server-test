@@ -21,6 +21,7 @@ int main() {
             log_err() << header->num << ": unhandled protocol " << header->proto;
             continue;
         }
+        log_err() << header->num << ": " << header->type;
 
         switch ( header->type )
         {
