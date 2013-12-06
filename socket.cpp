@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <cstdlib>
 #include <netdb.h>
+#include <unistd.h>
 
 /**
  * Bind address for server.

@@ -17,3 +17,6 @@ client:
 
 clean:
 	rm $(BINDIR)/*
+
+install:
+	scp $(BINDIR)/backend bpla.falt.ru:
