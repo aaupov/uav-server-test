@@ -23,13 +23,16 @@ MYSQL* db_connection::open_connection( )
     {
         log_err() << "mysql_init() failed: " << mysql_error( conn);
         exit( EXIT_FAILURE);
-    }                                                                           
-    if ( mysql_real_connect( conn, "localhost", "webdev", 
+    }
+    //if ( mysql_real_connect( conn, "localhost", "webdev", 
+    if ( mysql_real_connect( conn, "62.76.179.84", "webdev", 
                              "guL9toh3le", "bpla", 0, NULL, 0) == NULL ) 
     {
         log_err() << "connect failed: " << mysql_error( conn);
         exit( EXIT_FAILURE);
-    }                                                                           
+    } else {
+        log_norm() << "Successfully connected to MySQL";
+    }
     return conn;
 }
 

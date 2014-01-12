@@ -12,8 +12,6 @@ class handler
     db_connection* conn;
     /* Cast buffer pointer to specified message type pointer */
     template<typename T> const T* typecast(const char* buf) const;
-    /* Checksum computation */
-    template<typename T> uint32_t checksum(const char* buf) const;
     /* Checksum verification */
     template<typename T> bool okchecksum(const T* msg) const;
     /* Utility function for checksum computation */
@@ -38,29 +36,22 @@ bool
 handler::okchecksum(const T* msg) const
 {
     uint32_t checksum, reference = msg->msg.checksum;
-    T* msg_with_zero_checksum = const_cast<T*>(msg);
+    T msg_with_zero_checksum = *msg;
 
-    msg_with_zero_checksum->msg.checksum = 0;
+    msg_with_zero_checksum.msg.checksum = 0;
     checksum = byte_repres(
-            reinterpret_cast<const uint8_t*>(msg_with_zero_checksum), 
+            reinterpret_cast<const uint8_t*>(&msg_with_zero_checksum), 
             sizeof(T));
 
-    if (reference - checksum == 0)
+    if (reference == checksum)
         return true;
 
-    log_err() << "Incorrect checksum";
+    log_err() << "Incorrect checksum: "
+              << checksum 
+              << ", reference= "
+              << reference;
     return false;
 }
-
-/*
-template<typename T>
-uint32_t 
-handler::checksum(const char* buf) const
-{
-    uint32_t checksum;
-    T* buf_with_zero_checksum = const_cast<T*>(buf);
-}
-*/
 
 template<typename T> 
 const T* 

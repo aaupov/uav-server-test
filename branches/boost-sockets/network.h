@@ -13,10 +13,10 @@ class udp_server
 
 public:
     /* Initialise a socket to listen on UDP port kPort. */
-    udp_server(boost::asio::io_service& io_service, handler net_disp) : 
-        socket_(io_service, udp::endpoint(udp::v4(), kPort))
+    udp_server(boost::asio::io_service& io_service, handler& net_disp) : 
+        socket_(io_service, udp::endpoint(udp::v4(), kPort)),
+        network_dispatcher(net_disp)
     {
-        network_dispatcher = net_disp;
         start_receive();
     }
 
@@ -37,5 +37,5 @@ private:
     udp::socket socket_;
     udp::endpoint remote_endpoint_;
     boost::array<char, kMaxMessageSize> recv_buffer_;
-    handler network_dispatcher;
+    handler& network_dispatcher;
 };

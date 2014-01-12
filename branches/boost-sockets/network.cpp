@@ -18,6 +18,8 @@ void
 udp_server::handle_receive(const boost::system::error_code& error,
                            std::size_t /*size*/)
 {
+    log_norm() << "Received from " 
+               << remote_endpoint_.address().to_string();
     if (!error)
     {
         /* Memorize remote_endpoint of current client */
