@@ -47,7 +47,6 @@ udp_server::start_send()
                     boost::asio::placeholders::error,
                     boost::asio::placeholders::bytes_transferred)
                 );
-
 #endif
 }
 
