@@ -1,0 +1,11 @@
+Server
+You shouldn't probably compile or run backend, as it needs local mysql 
+server w/appropriate tables and layouts.
+
+Dummy client
+(sends some data packed into DCP structs)
+
+how to compile: make client
+how to run: (bash script)
+for (( i = 11; i < 30; i++ )) do ./dev/uav/bpla_server/client $i; sleep 5; done
+./client <num> - num will be used as idx of heartbeat message
