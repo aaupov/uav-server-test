@@ -14,6 +14,7 @@ class plane
     unsigned int id;
     command_state_e command_state;
     struct state state;
+    unsigned int last_command;
 public:
     plane();
     unsigned int getId();
@@ -21,4 +22,5 @@ public:
     bool setCommandState(command_state_e st);
     void send(class command cmd);
     void updateDBRecord();
+    unsigned int getLastCommand();
 };

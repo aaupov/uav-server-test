@@ -4,12 +4,12 @@
 #include <stdexcept>
 #include "dcp.h"
 #include "logger.h"
-#include "mysql_connection.h"
+#include "database.h"
 
 class handler
 {
     /* DB connection */
-    db_connection* conn;
+    database* conn;
     /* Cast buffer pointer to specified message type pointer */
     template<typename T> const T* typecast(const char* buf) const;
     /* Checksum verification */
