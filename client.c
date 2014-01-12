@@ -32,7 +32,8 @@ int main( int argc, char* argv[]) {
 
     addr_sr.sin_family = AF_INET;
     addr_sr.sin_port = htons(51000);
-    inet_aton("62.76.179.84", &addr_sr.sin_addr); 
+    //inet_aton("62.76.179.84", &addr_sr.sin_addr); 
+    inet_aton("localhost", &addr_sr.sin_addr); 
 
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     bind(sock, (const struct sockaddr *)&addr_cl, sizeof(struct sockaddr_in));
@@ -75,6 +76,8 @@ int main( int argc, char* argv[]) {
         hb.st.pitch = 3.14;
         hb.st.roll = 1592;
         hb.msg.checksum = simple_sum_hash( (const uint8_t *)&hb, sizeof( hb));
+
+        printf("checksum: %d", hb.msg.checksum);
     }
 
     sendto(sock, &hb, sizeof(hb), 0, (const struct sockaddr *)&addr_sr, sizeof(addr_sr));

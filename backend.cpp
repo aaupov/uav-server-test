@@ -1,56 +1,21 @@
-#include "dcp.h"
-#include "handler.h"
-#include "mysql_connection.h"
 #include "logger.h"
-#include "socket.h"
-#include <cstring>
+#include "network.h"
+#include "handler.h"
 
 int main() {
-    char* buf;
-    struct message* header = new struct message;
-    db_connection* conn = new db_connection;
-    net_connection* net_conn = new net_connection;
-
-    while ( 1 ){
-        buf = net_conn->receive( );
-        memcpy( header, buf, sizeof( struct message));
-
-        /** Only allow DCP messages */
-        if ( header->proto != Proto_Dispatcher )
-        {
-            log_err() << header->num << ": unhandled protocol " << header->proto;
-            continue;
-        }
-        log_err() << header->num << ": " << header->type;
-
-        switch ( header->type )
-        {
-            case Msg_Heartbeat:
-                if ( checksum<struct msg_heartbeat>( (const uint8_t*)buf) )
-                {
-                    log_err() << "Incorrect checksum";
-                    continue;
-                }
-                heartbeat( buf, conn);
-                break;
-
-            case Msg_ReqConfirm:
-                conf_request( buf);
-                break;
-
-            case Msg_Confirm:
-                confirm( buf);
-                break;
-
-            case Msg_Report:
-                report( buf);
-                break;
-
-            default:
-                log_err() << header->num << ": unhandled message type " << header->type;
-                continue;
-        }
-        delete buf;
+    try
+    {
+        /* Create network message handler object */
+        handler network_dispatcher;
+        /* Create a server object to accept incoming client requests, 
+         * and run the io_service object. */
+        boost::asio::io_service io_service;
+        udp_server server(io_service, network_dispatcher);
+        io_service.run();
+    }
+    catch (std::exception& e)
+    {
+        log_err() << e.what();
     }
 
     log_norm() << "Server terminated";

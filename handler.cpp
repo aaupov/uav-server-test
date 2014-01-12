@@ -1,62 +1,129 @@
 #include "handler.h"
 
-void heartbeat( void* buf, db_connection* conn)
+handler::handler()
 {
-    struct msg_heartbeat* hb = new struct msg_heartbeat;
-    std::stringstream query;
+    conn = new db_connection;
+}
 
-    memcpy( hb, buf, sizeof( struct msg_heartbeat));
+handler::~handler()
+{
+    delete conn;
+}
+
+void 
+handler::deduce_type(const char* buf) const
+{
+    struct message* header = new struct message;
+    memcpy( header, buf, sizeof( struct message));
+
+    /** Only allow DCP messages */
+    if (header->proto != Proto_Dispatcher)
+    {
+        log_err() << header->num 
+                  << ": unhandled protocol " 
+                  << header->proto;
+        return;
+    }
+    log_norm() << header->num 
+               << ": " 
+               << header->type;
+
+    switch ( header->type )
+    {
+        case Msg_Heartbeat:{
+            const struct msg_heartbeat* hb = typecast<struct msg_heartbeat>(buf);
+            if (okchecksum(hb))
+                heartbeat(hb);
+            break;
+            }
+
+        case Msg_ReqConfirm:{
+            const struct msg_reqconfirm* rc = typecast<struct msg_reqconfirm>(buf);
+            if (okchecksum(rc))
+                conf_request(rc);
+            break;
+            }
+
+        case Msg_Confirm:{
+            const struct msg_confirm* conf = typecast<struct msg_confirm>(buf);
+            if (okchecksum(conf))
+                confirm(conf);
+            break;
+            }
+
+        case Msg_Report:{
+            const struct msg_report* rep = typecast<struct msg_report>(buf);
+            if (okchecksum(rep))
+                report(rep);
+            break;
+            }
+
+        default:
+            log_err() << header->num 
+                      << ": unhandled message type " 
+                      << header->type;
+            return;
+    }
+    
+    delete header;
+}
+
+void 
+handler::heartbeat(const struct msg_heartbeat* msg) const
+{
+    std::stringstream query;
+    /* create query message */
+    query << "insert into msg_heartbeat values (" 
+          << msg->msg.num << ", "
+          << msg->st.longitude << ", "
+          << msg->st.latitude << ", "
+          << msg->st.heading << ", "
+          << msg->st.baroaltabs << ", "
+          << msg->st.baroaltrel << ", "
+          << msg->st.gpsalt << ", "
+          << msg->st.temperature << ", "
+          << msg->st.voltage << ", "
+          << msg->st.current << ", "
+          << msg->st.boardtime << ", "
+          << (int)msg->st.gsmlevel  << ", "
+          << msg->st.last_msgnum << ", "
+          << (int)msg->st.denial << ", "
+          << msg->st.srv.channel[0]  << ", "
+          << msg->st.srv.channel[1]  << ", "
+          << msg->st.srv.channel[2]  << ", "
+          << msg->st.srv.channel[3]  << ", "
+          << msg->st.srv.channel[4]  << ", "
+          << msg->st.srv.channel[5]  << ", "
+          << msg->st.gpsspeed  << ", "
+          << (int)msg->st.status << ", "
+          << msg->st.roll << ", "
+          << msg->st.pitch << ")";
 
     /* push data into db */
-    query << "insert into msg_heartbeat values (" 
-          << hb->msg.num << ", "
-          << hb->st.longitude << ", "
-          << hb->st.latitude << ", "
-          << hb->st.heading << ", "
-          << hb->st.baroaltabs << ", "
-          << hb->st.baroaltrel << ", "
-          << hb->st.gpsalt << ", "
-          << hb->st.temperature << ", "
-          << hb->st.voltage << ", "
-          << hb->st.current << ", "
-          << hb->st.boardtime << ", "
-          << (int)hb->st.gsmlevel  << ", "
-          << hb->st.last_msgnum << ", "
-          << (int)hb->st.denial << ", "
-          << hb->st.srv.channel[0]  << ", "
-          << hb->st.srv.channel[1]  << ", "
-          << hb->st.srv.channel[2]  << ", "
-          << hb->st.srv.channel[3]  << ", "
-          << hb->st.srv.channel[4]  << ", "
-          << hb->st.srv.channel[5]  << ", "
-          << hb->st.gpsspeed  << ", "
-          << (int)hb->st.status << ", "
-          << hb->st.roll << ", "
-          << hb->st.pitch << ")";
-
     conn->query( query.str( ));
-    delete hb;
 
     return;
 }
 
-void conf_request( void* buf)
+void 
+handler::conf_request(const struct msg_reqconfirm* msg) const
 {
     return;
 }
 
-void confirm( void* buf)
+void 
+handler::confirm(const struct msg_confirm* msg) const
 {
-    return;
 }
 
-void report( void* buf)
+void 
+handler::report(const struct msg_report* msg) const
 {
-    return;
 }
 
 /** Nasty bytes manipulation */
-uint32_t byte_repres( const uint8_t* obj, size_t size)
+uint32_t 
+handler::byte_repres(const uint8_t* obj, size_t size) const
 {
     uint32_t result = 0;
     for ( const uint8_t* tmp = obj; tmp < obj + size; result += *tmp++ );
