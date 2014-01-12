@@ -4,10 +4,10 @@ CFLAGS=-Wall -O2
 CXXFLAGS=$(CFLAGS) -std=c++11
 CXXFLAGS_DEBUG=-Wall -ggdb -O0 -std=c++11
 #statically link against boost
-LDFLAGS=-lmysqlclient /usr/lib/libboost_system.a 
+LDFLAGS=-lmysqlcppconn /usr/lib/libboost_system.a 
 INCLUDE=-I/home/fads/dev/uav/rpcp/
 BINDIR=./bin
-SOURCES=backend.cpp mysql_connection.cpp handler.cpp logger.cpp network.cpp
+SOURCES=backend.cpp database.cpp handler.cpp logger.cpp network.cpp
 
 all: backend client
 

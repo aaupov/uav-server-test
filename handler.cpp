@@ -2,7 +2,7 @@
 
 handler::handler()
 {
-    conn = new db_connection;
+    conn = new database;
 }
 
 handler::~handler()

@@ -4,6 +4,7 @@ plane::plane()
 {
     id = 1;
     command_state = STATE_NONE;
+    last_command = 0;
 }
 
 unsigned int
@@ -21,9 +22,17 @@ plane::getCommandState()
 bool
 plane::setCommandState(command_state_e st)
 {
+    return true;
 }
 
 void
 plane::send(class command cmd)
 {
+    /* Send to associated endpoint */
+}
+
+unsigned int 
+plane::getLastCommand()
+{
+    return last_command;
 }
