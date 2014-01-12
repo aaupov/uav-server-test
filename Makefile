@@ -1,11 +1,11 @@
 CC=clang
 CXX=clang++
 CFLAGS=-Wall -O2
-CXXFLAGS=$(CFLAGS)
-LDFLAGS=-lmysqlclient
-INCLUDE=-I../rpcp
+CXXFLAGS=$(CFLAGS) -std=c++11
+LDFLAGS=-lmysqlclient -lboost_system
+INCLUDE=-I/home/fads/dev/uav/rpcp/
 BINDIR=./bin
-SOURCES=backend.cpp mysql_connection.cpp handler.cpp logger.cpp socket.cpp
+SOURCES=backend.cpp mysql_connection.cpp handler.cpp logger.cpp network.cpp
 
 all: backend client
 
