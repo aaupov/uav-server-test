@@ -15,12 +15,12 @@ database::~database()
     delete unsent_commands_pstmt;
 }
 
-auto_ptr<sql::ResultSet>
+unique_ptr<sql::ResultSet>
 database::query(string q)
 {
-    auto_ptr<sql::ResultSet> res;
+    unique_ptr<sql::ResultSet> res;
 	try {
-        auto_ptr<sql::Statement> stmt(con->createStatement());
+        unique_ptr<sql::Statement> stmt(con->createStatement());
         res.reset(stmt->executeQuery(q));
 	} catch (sql::SQLException &e) {
         log_err() << e.what();

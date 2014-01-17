@@ -21,11 +21,11 @@ public:
     database();
     ~database();
     base_command command_poll();
-    auto_ptr<sql::ResultSet> query(string);
+    unique_ptr<sql::ResultSet> query(string);
 
 private:
     sql::mysql::MySQL_Driver *driver;
-    auto_ptr<sql::Connection> con;
+    unique_ptr<sql::Connection> con;
 
     sql::PreparedStatement* unsent_commands_pstmt;
     //unsigned last_read_command;
