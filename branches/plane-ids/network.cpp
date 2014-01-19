@@ -4,6 +4,7 @@
 void 
 udp_server::start_receive()
 {
+    log_norm() << "udp_server::start_receive()";
     /* Listen in the background for a new request. */
     socket_.async_receive_from(
             boost::asio::buffer(recv_buffer_), remote_endpoint_,
