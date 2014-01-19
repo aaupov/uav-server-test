@@ -4,7 +4,7 @@
 class base_command
 {
 protected:
-    enum msg_dcp_types type;
+    msg_dcp_types type;
 };
 
 class raw_command : public base_command
@@ -35,7 +35,7 @@ class updateCheckpoint : base_command
     struct msg_updcpt* message;
 public:
     updateCheckpoint(uint16_t routenum, struct checkpoint pt);
-    updateCheckpoint()
+    ~updateCheckpoint()
     {
         free(message);
     }

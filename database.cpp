@@ -5,6 +5,8 @@ database::database():
     /* Using the Driver to create a connection */
     con(driver->connect("localhost", "webdev", "guL9toh3le"))
 {
+    con->setSchema("bpla");
+    log_norm() << "mysql connect";
     /*last_read_command = 0;*/
     unsent_commands_pstmt = con->prepareStatement(
             "SELECT * FROM commands WHERE sent = 0 OR sent IS NULL");
