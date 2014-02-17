@@ -6,10 +6,10 @@
 int main() {
     try
     {
+        /* Database connection */
+        database* db = new database;
         /* Create network message handler object */
-        handler network_dispatcher;
-        /* Database poller */
-        database db;
+        handler network_dispatcher(db);
         /* Create a server object to accept incoming client requests, 
          * and run the io_service object. */
         boost::asio::io_service io_service;
@@ -18,7 +18,7 @@ int main() {
         /* Run DB poller, in a loop :( */
         while (true)
         {
-            db.command_poll();
+            db->command_poll();
             sleep(1);
         }
     }

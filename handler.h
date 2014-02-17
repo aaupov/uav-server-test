@@ -24,8 +24,7 @@ class handler
     void report(const struct msg_report* msg) const;
 
 public:
-    handler();
-    ~handler();
+    handler(database* db);
     /* Deduce type for buffer and call appropriate handler */
     void deduce_type(const char* buf) const;
 };

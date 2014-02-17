@@ -1,13 +1,8 @@
 #include "handler.h"
 
-handler::handler()
+handler::handler(database* db)
 {
-    conn = new database;
-}
-
-handler::~handler()
-{
-    delete conn;
+    conn = db;
 }
 
 void 
