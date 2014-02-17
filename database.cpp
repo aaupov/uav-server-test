@@ -41,6 +41,7 @@ database::command_poll()
     {
         type = static_cast<enum msg_dcp_types>(res->getUInt("type"));
         unsigned int num = res->getUInt("num");
+        log_norm() << "Command " << num << ", type " << type;
         void* cmd;
 
         switch (type)
