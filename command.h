@@ -1,4 +1,7 @@
+extern "C" 
+{
 #include "dcp.h"
+}
 #include <cstdlib>
 
 class base_command

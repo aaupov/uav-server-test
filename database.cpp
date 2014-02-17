@@ -41,10 +41,29 @@ database::command_poll()
     {
         type = static_cast<enum msg_dcp_types>(res->getUInt("type"));
         unsigned int num = res->getUInt("num");
+        void* cmd;
 
         switch (type)
         {
             case Msg_NewRoute:
+                /* poll route table */
+                //newRoute cmd();
+                break;
+            case Msg_CleanRoute:
+                cmd = new cleanRoute;
+                break;
+            case Msg_UpdatePoint:
+                break;
+            case Msg_Emergency:
+                break;
+            case Msg_HandOn:
+                cmd = new setManualMode;
+                break;
+            case Msg_HandOff:
+                cmd = new setAutomaticMode;
+                break;
+            case Msg_ZeroBaroAlt:
+                break;
             default: 
                 log_err() << "Command " 
                           << num 
