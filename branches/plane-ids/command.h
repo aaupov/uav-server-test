@@ -16,7 +16,7 @@ protected:
     struct msg_raw* message;
 };
 
-class newRoute : base_command
+class newRoute : public base_command
 {
     struct msg_route* message;
 public:
@@ -27,13 +27,13 @@ public:
     }
 };
 
-class cleanRoute : raw_command
+class cleanRoute : public raw_command
 {
 public:
     cleanRoute();
 };
 
-class updateCheckpoint : base_command
+class updateCheckpoint : public base_command
 {
     struct msg_updcpt* message;
 public:
@@ -44,7 +44,7 @@ public:
     }
 };
 
-class correctZeroBaroAlt : base_command
+class correctZeroBaroAlt : public base_command
 {
     struct msg_zerobaroalt* message;
 public:
@@ -55,7 +55,7 @@ public:
     }
 };
 
-class confirmRequest : base_command
+class confirmRequest : public base_command
 {
     struct msg_reqconfirm* message;
 public:
@@ -66,7 +66,7 @@ public:
     }
 };
 
-class confirm : base_command
+class confirm : public base_command
 {
     struct msg_confirm* message;
 public:
@@ -77,7 +77,7 @@ public:
     }
 };
 
-class report : base_command
+class report : public base_command
 {
     struct msg_report* message;
 public:
@@ -88,13 +88,13 @@ public:
     }
 };
 
-class setManualMode : raw_command
+class setManualMode : public raw_command
 {
 public:
     setManualMode();
 };
 
-class setAutomaticMode : raw_command
+class setAutomaticMode : public raw_command
 {
 public:
     setAutomaticMode();

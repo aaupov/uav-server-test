@@ -20,7 +20,7 @@ class database
 public:
     database();
     ~database();
-    base_command command_poll();
+    base_command* command_poll();
     unique_ptr<sql::ResultSet> query(string);
 
 private:
