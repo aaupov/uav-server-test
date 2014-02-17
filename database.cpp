@@ -9,7 +9,7 @@ database::database():
     log_norm() << "mysql connect";
     /*last_read_command = 0;*/
     unsent_commands_pstmt = con->prepareStatement(
-            "SELECT * FROM commands WHERE sent = 0 OR sent IS NULL");
+            "select * from commands where sent is null");
 }
 
 database::~database()
@@ -31,24 +31,28 @@ database::query(string q)
     return res;
 }
 
-base_command
+base_command*
 database::command_poll()
 {
-    base_command cmd;
+    log_norm() << "Database command polling started";
+    base_command* cmd;
     enum msg_dcp_types type;
     sql::ResultSet* res = unsent_commands_pstmt->executeQuery();
+    if (res->wasNull())
+    {
+        log_norm() << "No unsent messages";
+    }
     while (res->next())
     {
         type = static_cast<enum msg_dcp_types>(res->getUInt("type"));
         unsigned int num = res->getUInt("num");
         log_norm() << "Command " << num << ", type " << type;
-        void* cmd;
 
         switch (type)
         {
             case Msg_NewRoute:
                 /* poll route table */
-                //newRoute cmd();
+                //cmd = newRoute;
                 break;
             case Msg_CleanRoute:
                 cmd = new cleanRoute;
