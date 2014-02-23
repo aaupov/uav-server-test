@@ -38,10 +38,6 @@ database::command_poll()
     base_command* cmd;
     enum msg_dcp_types type;
     sql::ResultSet* res = unsent_commands_pstmt->executeQuery();
-    if (res->wasNull())
-    {
-        log_norm() << "No unsent messages";
-    }
     while (res->next())
     {
         type = static_cast<enum msg_dcp_types>(res->getUInt("type"));
@@ -76,5 +72,6 @@ database::command_poll()
                           << type;
         }
     }
+    log_norm() << "No unsent messages";
     return cmd;
 }
