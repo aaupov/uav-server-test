@@ -53,3 +53,9 @@ confirm::confirm(uint16_t cmdnum, uint8_t status)
     type = Msg_Confirm;
     message = cmd_confirm(cmdnum, status);
 }
+
+emergency::emergency()
+{
+    type = Msg_Emergency;
+    message = cmd_emergency();
+}

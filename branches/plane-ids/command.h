@@ -99,3 +99,9 @@ class setAutomaticMode : public raw_command
 public:
     setAutomaticMode();
 };
+
+class emergency : public raw_command
+{
+public:
+    emergency();
+};
