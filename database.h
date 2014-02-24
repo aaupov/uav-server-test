@@ -29,5 +29,8 @@ private:
 
     sql::PreparedStatement* unsent_commands_pstmt;
     //unsigned last_read_command;
+    updateCheckpoint* parse_updcpt();
+    correctZeroBaroAlt* parse_zerobaroalt();
+    newRoute* parse_route();
 };
 

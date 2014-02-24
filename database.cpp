@@ -48,14 +48,16 @@ database::command_poll()
         {
             case Msg_NewRoute:
                 /* poll route table */
-                //cmd = newRoute;
+                cmd = parse_route();
                 break;
             case Msg_CleanRoute:
                 cmd = new cleanRoute;
                 break;
             case Msg_UpdatePoint:
+                cmd = parse_updcpt();
                 break;
             case Msg_Emergency:
+                cmd = new emergency;
                 break;
             case Msg_HandOn:
                 cmd = new setManualMode;
@@ -64,6 +66,7 @@ database::command_poll()
                 cmd = new setAutomaticMode;
                 break;
             case Msg_ZeroBaroAlt:
+                cmd = parse_zerobaroalt();
                 break;
             default: 
                 log_err() << "Command " 
@@ -71,6 +74,9 @@ database::command_poll()
                           << ": invalid type" 
                           << type;
         }
+        /* update plane state */
+        /* send msg */
+        /* mark msg as sent */
     }
     log_norm() << "No unsent messages";
     return cmd;
