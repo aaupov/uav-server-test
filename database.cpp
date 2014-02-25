@@ -95,23 +95,32 @@ updateCheckpoint*
 database::parse_updcpt(unsigned int num)
 {
     struct checkpoint pt;
-    sql::PreparedStatement* update_cpt_pstmt = 
-        mkstmt("select * from msg_updcpt where num=?");
-    update_cpt_pstmt->setUInt(1, num);
-    sql::ResultSet* res = update_cpt_pstmt->executeQuery();
+    unsigned int route;
+    try {
+        sql::PreparedStatement* update_cpt_pstmt = 
+            mkstmt("select * from msg_updcpt where num=?");
+        update_cpt_pstmt->setUInt(1, num);
+        sql::ResultSet* res = update_cpt_pstmt->executeQuery();
 
-    /* parse result set */
-    unsigned int route = res->getUInt("routenum");
-    pt.speed = res->getUInt("speed");
-    pt.altitude = res->getUInt("altitude");
-    pt.position.longitude = res->getDouble("position_longitude");
-    pt.position.latitude = res->getDouble("position_latitude");
-    pt.emergency.longitude = res->getDouble("emergency_longitude");
-    pt.emergency.latitude = res->getDouble("emergency_latitude");
+        /* parse result set */
+        route = res->getUInt("routenum");
+        pt.speed = res->getUInt("speed");
+        pt.altitude = res->getUInt("altitude");
+        pt.position.longitude = res->getDouble("position_longitude");
+        pt.position.latitude = res->getDouble("position_latitude");
+        pt.emergency.longitude = res->getDouble("emergency_longitude");
+        pt.emergency.latitude = res->getDouble("emergency_latitude");
 
+        delete res;
+        delete update_cpt_pstmt;
+    } catch (sql::SQLException &e) {
+        log_err() << "# ERR: SQLException in " << __FILE__
+            << "(" << __FUNCTION__ << ") on line " << __LINE__;
+        log_err() << "# ERR: " << e.what()
+            << " (MySQL error code: " << e.getErrorCode()
+            << ", SQLState: " << e.getSQLState() << " )" ;
+    }
     updateCheckpoint* cpt = new updateCheckpoint(route, pt);
-    delete res;
-    delete update_cpt_pstmt;
     return cpt;
 }
 
@@ -125,15 +134,25 @@ database::parse_route()
 correctZeroBaroAlt*
 database::parse_zerobaroalt(unsigned int num)
 {
-    sql::PreparedStatement* update_zba_pstmt = 
-        mkstmt("select zerobaroalt from msg_zerobaroalt where num=?");
-    update_zba_pstmt->setUInt(1, num);
-    sql::ResultSet* res = update_zba_pstmt->executeQuery();
+    unsigned int zero;
+    try {
+        sql::PreparedStatement* update_zba_pstmt = 
+            mkstmt("select zerobaroalt from msg_zerobaroalt where num=?");
+        update_zba_pstmt->setUInt(1, num);
+        sql::ResultSet* res = update_zba_pstmt->executeQuery();
 
-    unsigned int zero = res->getUInt("zerobaroalt");
+        zero = res->getUInt("zerobaroalt");
+
+        delete res;
+        delete update_zba_pstmt;
+    } catch (sql::SQLException &e) {
+        log_err() << "# ERR: SQLException in " << __FILE__
+            << "(" << __FUNCTION__ << ") on line " << __LINE__;
+        log_err() << "# ERR: " << e.what()
+            << " (MySQL error code: " << e.getErrorCode()
+            << ", SQLState: " << e.getSQLState() << " )" ;
+    }
     correctZeroBaroAlt* zba = new correctZeroBaroAlt(zero);
-    delete res;
-    delete update_zba_pstmt;
     return zba;
 }
 
@@ -146,9 +165,18 @@ database::mkstmt(string str)
 void
 database::mark_sent(unsigned int num)
 {
-    sql::PreparedStatement* mark_sent_pstmt = 
-        mkstmt("update commands set sent=1 where num=?");
-    mark_sent_pstmt->setUInt(1, num);
-    mark_sent_pstmt->executeUpdate();
-    delete mark_sent_pstmt;
+    try {
+        sql::PreparedStatement* mark_sent_pstmt = 
+            mkstmt("update commands set sent=1 where num=?");
+        mark_sent_pstmt->setUInt(1, num);
+        mark_sent_pstmt->executeUpdate();
+
+        delete mark_sent_pstmt;
+    } catch (sql::SQLException &e) {
+        log_err() << "# ERR: SQLException in " << __FILE__
+            << "(" << __FUNCTION__ << ") on line " << __LINE__;
+        log_err() << "# ERR: " << e.what()
+            << " (MySQL error code: " << e.getErrorCode()
+            << ", SQLState: " << e.getSQLState() << " )" ;
+    }
 }
