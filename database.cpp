@@ -73,6 +73,7 @@ database::command_poll()
                           << num 
                           << ": invalid type" 
                           << type;
+                throw std::exception();
         }
         /* update plane state */
         /* send msg */
@@ -88,7 +89,6 @@ database::command_poll()
             << ", SQLState: " << e.getSQLState() << " )" ;
     }
     log_norm() << "No unsent messages";
-    return cmd;
 }
 
 updateCheckpoint* 
