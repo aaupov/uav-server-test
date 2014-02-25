@@ -31,15 +31,15 @@ database::query(string q)
     return res;
 }
 
-base_command*
+void
 database::command_poll()
 {
     log_norm() << "Database command polling started";
-    base_command* cmd;
     enum msg_dcp_types type;
     sql::ResultSet* res = unsent_commands_pstmt->executeQuery();
     while (res->next())
     {
+        base_command* cmd;
         type = static_cast<enum msg_dcp_types>(res->getUInt("type"));
         unsigned int num = res->getUInt("num");
         log_norm() << "Command " << num << ", type " << type;
@@ -76,7 +76,8 @@ database::command_poll()
         /* update plane state */
         /* send msg */
         /* mark msg as sent */
-        mark_sent(num);
+        //mark_sent(num);
+        delete cmd;
     }
     log_norm() << "No unsent messages";
     return cmd;
@@ -102,6 +103,7 @@ database::parse_updcpt(unsigned int num)
 
     updateCheckpoint* cpt = new updateCheckpoint(route, pt);
     delete res;
+    delete update_cpt_pstmt;
     return cpt;
 }
 
@@ -123,6 +125,7 @@ database::parse_zerobaroalt(unsigned int num)
     unsigned int zero = res->getUInt("zerobaroalt");
     correctZeroBaroAlt* zba = new correctZeroBaroAlt(zero);
     delete res;
+    delete update_zba_pstmt;
     return zba;
 }
 
@@ -138,6 +141,6 @@ database::mark_sent(unsigned int num)
     sql::PreparedStatement* mark_sent_pstmt = 
         mkstmt("update commands set sent=1 where num=?");
     mark_sent_pstmt->setUInt(1, num);
-    mark_sent_pstmt->executeQuery();
+    mark_sent_pstmt->executeUpdate();
     delete mark_sent_pstmt;
 }
