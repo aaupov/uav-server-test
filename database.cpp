@@ -36,6 +36,7 @@ database::command_poll()
 {
     log_norm() << "Database command polling started";
     enum msg_dcp_types type;
+    try {
     sql::ResultSet* res = unsent_commands_pstmt->executeQuery();
     while (res->next())
     {
@@ -78,6 +79,13 @@ database::command_poll()
         /* mark msg as sent */
         //mark_sent(num);
         delete cmd;
+    }
+    } catch (sql::SQLException &e) {
+        log_err() << "# ERR: SQLException in " << __FILE__
+            << "(" << __FUNCTION__ << ") on line " << __LINE__;
+        log_err() << "# ERR: " << e.what()
+            << " (MySQL error code: " << e.getErrorCode()
+            << ", SQLState: " << e.getSQLState() << " )" ;
     }
     log_norm() << "No unsent messages";
     return cmd;
