@@ -101,6 +101,8 @@ database::parse_updcpt(unsigned int num)
             mkstmt("select * from msg_updcpt where num=?");
         update_cpt_pstmt->setUInt(1, num);
         sql::ResultSet* res = update_cpt_pstmt->executeQuery();
+        /* Initially the cursor is positioned before the first row */
+        res->next();
 
         /* parse result set */
         route = res->getUInt("routenum");
@@ -140,6 +142,8 @@ database::parse_zerobaroalt(unsigned int num)
             mkstmt("select zerobaroalt from msg_zerobaroalt where num=?");
         update_zba_pstmt->setUInt(1, num);
         sql::ResultSet* res = update_zba_pstmt->executeQuery();
+        /* Initially the cursor is positioned before the first row */
+        res->next();
 
         zero = res->getUInt("zerobaroalt");
 
