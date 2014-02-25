@@ -8,8 +8,8 @@ database::database():
     con->setSchema("bpla");
     log_norm() << "mysql connect";
     /*last_read_command = 0;*/
-    unsent_commands_pstmt = con->prepareStatement(
-            "select * from commands where sent is null");
+    unsent_commands_pstmt = 
+        mkstmt("select * from commands where sent is null");
 }
 
 database::~database()
@@ -47,14 +47,13 @@ database::command_poll()
         switch (type)
         {
             case Msg_NewRoute:
-                /* poll route table */
                 cmd = parse_route();
                 break;
             case Msg_CleanRoute:
                 cmd = new cleanRoute;
                 break;
             case Msg_UpdatePoint:
-                cmd = parse_updcpt();
+                cmd = parse_updcpt(num);
                 break;
             case Msg_Emergency:
                 cmd = new emergency;
@@ -66,7 +65,7 @@ database::command_poll()
                 cmd = new setAutomaticMode;
                 break;
             case Msg_ZeroBaroAlt:
-                cmd = parse_zerobaroalt();
+                cmd = parse_zerobaroalt(num);
                 break;
             default: 
                 log_err() << "Command " 
@@ -77,7 +76,68 @@ database::command_poll()
         /* update plane state */
         /* send msg */
         /* mark msg as sent */
+        mark_sent(num);
     }
     log_norm() << "No unsent messages";
     return cmd;
+}
+
+updateCheckpoint* 
+database::parse_updcpt(unsigned int num)
+{
+    struct checkpoint pt;
+    sql::PreparedStatement* update_cpt_pstmt = 
+        mkstmt("select * from msg_updcpt where num=?");
+    update_cpt_pstmt->setUInt(1, num);
+    sql::ResultSet* res = update_cpt_pstmt->executeQuery();
+
+    /* parse result set */
+    unsigned int route = res->getUInt("routenum");
+    pt.speed = res->getUInt("speed");
+    pt.altitude = res->getUInt("altitude");
+    pt.position.longitude = res->getDouble("position_longitude");
+    pt.position.latitude = res->getDouble("position_latitude");
+    pt.emergency.longitude = res->getDouble("emergency_longitude");
+    pt.emergency.latitude = res->getDouble("emergency_latitude");
+
+    updateCheckpoint* cpt = new updateCheckpoint(route, pt);
+    delete res;
+    return cpt;
+}
+
+newRoute* 
+database::parse_route()
+{
+    /* dummy function f.t.b */
+    return new newRoute(0, NULL);
+}
+
+correctZeroBaroAlt*
+database::parse_zerobaroalt(unsigned int num)
+{
+    sql::PreparedStatement* update_zba_pstmt = 
+        mkstmt("select zerobaroalt from msg_zerobaroalt where num=?");
+    update_zba_pstmt->setUInt(1, num);
+    sql::ResultSet* res = update_zba_pstmt->executeQuery();
+
+    unsigned int zero = res->getUInt("zerobaroalt");
+    correctZeroBaroAlt* zba = new correctZeroBaroAlt(zero);
+    delete res;
+    return zba;
+}
+
+sql::PreparedStatement*
+database::mkstmt(string str)
+{
+    return con->prepareStatement(str);
+}
+
+void
+database::mark_sent(unsigned int num)
+{
+    sql::PreparedStatement* mark_sent_pstmt = 
+        mkstmt("update commands set sent=1 where num=?");
+    mark_sent_pstmt->setUInt(1, num);
+    mark_sent_pstmt->executeQuery();
+    delete mark_sent_pstmt;
 }

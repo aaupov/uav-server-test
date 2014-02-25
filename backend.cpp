@@ -1,6 +1,7 @@
 #include "logger.h"
 #include "network.h"
 #include "handler.h"
+#include "plane.h"
 #include <thread>
 
 void db_poll(database* db)
@@ -13,6 +14,8 @@ void db_poll(database* db)
 }
 
 int main() {
+    /* Our precious UAV */
+    plane model1;
     /* Database connection */
     database* db = new database;
     try

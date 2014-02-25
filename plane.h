@@ -1,4 +1,4 @@
-#include "dcp.h"
+#pragma once
 #include "command.h"
 #include "network.h"
 
@@ -15,12 +15,14 @@ class plane
     command_state_e command_state;
     struct state state;
     unsigned int last_command;
+    /* Current route, corresponds to last 'route_flushes' in table 'route' */
+    unsigned int route;
 public:
     plane();
     unsigned int getId();
     command_state_e getCommandState();
     bool setCommandState(command_state_e st);
-    void send(class command cmd);
+    void send(base_command* cmd);
     void updateDBRecord();
     unsigned int getLastCommand();
 };

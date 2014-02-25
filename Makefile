@@ -3,12 +3,12 @@ CXX=clang++
 CFLAGS=-Wall -O2
 CXXFLAGS=$(CFLAGS) -std=c++11
 CXXFLAGS_DEBUG=-Wall -ggdb -O0 -std=c++11
-RPCP=/home/fads/dev/uav/rpcp
+RPCP=/home/fads/uav-proto
 RPCPLIBS=$(RPCP)/dcp.o $(RPCP)/protoskel.o
-LDFLAGS=-lboost_system -lmysqlcppconn 
+LDFLAGS=-lboost_system -lmysqlcppconn -pthread
 INCLUDE=-I$(RPCP)
 BINDIR=./bin
-SOURCES=backend.cpp database.cpp handler.cpp logger.cpp network.cpp command.cpp
+SOURCES=backend.cpp database.cpp handler.cpp logger.cpp network.cpp command.cpp plane.cpp
 
 all: backend client
 
