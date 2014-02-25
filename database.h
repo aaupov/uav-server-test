@@ -19,7 +19,7 @@ class database
 public:
     database();
     ~database();
-    base_command* command_poll();
+    void command_poll();
     unique_ptr<sql::ResultSet> query(string);
     unique_ptr<sql::ResultSet> query(sql::PreparedStatement*);
     sql::PreparedStatement* mkstmt(string);
