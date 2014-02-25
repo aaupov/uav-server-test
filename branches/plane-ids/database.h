@@ -11,7 +11,6 @@
 #include <cstdlib>
 #include "logger.h"
 #include "command.h"
-#include "protoskel.h"
 
 using namespace std;
 
@@ -22,15 +21,17 @@ public:
     ~database();
     base_command* command_poll();
     unique_ptr<sql::ResultSet> query(string);
+    unique_ptr<sql::ResultSet> query(sql::PreparedStatement*);
+    sql::PreparedStatement* mkstmt(string);
 
 private:
     sql::mysql::MySQL_Driver *driver;
     unique_ptr<sql::Connection> con;
 
     sql::PreparedStatement* unsent_commands_pstmt;
-    //unsigned last_read_command;
-    updateCheckpoint* parse_updcpt();
-    correctZeroBaroAlt* parse_zerobaroalt();
+    updateCheckpoint* parse_updcpt(unsigned int num);
+    correctZeroBaroAlt* parse_zerobaroalt(unsigned int num);
     newRoute* parse_route();
+    void mark_sent(unsigned int num);
 };
 
